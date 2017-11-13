@@ -8,7 +8,7 @@ services:
     env_file: configuration.env
     command: ./start_app.sh
     ports:
-      - "8000:8000"
+      - "8000"
     volumes:
       - ./database:/srv/app/database
       - ./media:/srv/app/media
