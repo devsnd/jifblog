@@ -11,24 +11,37 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 't(33#&w-que*(txqqu20-0wd*r+z0yc7tvi&8g-q4@wbmsxmb4'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'NOT_SECRET')
+if SECRET_KEY == 'NOT_SECRET':
+    print('''
+    ===================
+    
+    
+    WARNING:
+    
+    You must set the DJANGO_SECRET_KEY environment variable! See the readme.
+    
+    
+    ===================   
+    ''')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'DEBUG' in os.environ
 
 ALLOWED_HOSTS = [
-    '192.168.1.40',
-    '127.0.0.1',
-]
+    'localhost'
+] + [host.strip() for host in os.environ.get('ALLOWED_HOSTS', '') if host.strip()]
+
 
 
 # Application definition
@@ -54,7 +67,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'gifnation.urls'
+ROOT_URLCONF = 'jifblog.urls'
 
 TEMPLATES = [
     {
@@ -72,7 +85,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'gifnation.wsgi.application'
+WSGI_APPLICATION = 'jifblog.wsgi.application'
 
 
 # Database
@@ -81,7 +94,7 @@ WSGI_APPLICATION = 'gifnation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'database', 'db.sqlite3'),
     }
 }
 
