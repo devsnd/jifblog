@@ -103,3 +103,7 @@ ENV/
 # django static and media files
 /media
 /static
+
+# do not check in the database and secrets
+database/db.sqlite3
+configuration.env
