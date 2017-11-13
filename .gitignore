@@ -99,3 +99,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# django static and media files
+/media
+/static
