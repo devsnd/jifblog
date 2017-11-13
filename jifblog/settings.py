@@ -40,7 +40,7 @@ DEBUG = 'DEBUG' in os.environ
 
 ALLOWED_HOSTS = [
     'localhost'
-] + [host.strip() for host in os.environ.get('ALLOWED_HOSTS', '') if host.strip()]
+] + [host.strip() for host in os.environ.get('ALLOWED_HOSTS', '').split(',') if host.strip()]
 
 
 
