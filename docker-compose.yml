@@ -18,6 +18,8 @@ services:
       environment:
         VIRTUAL_HOST: "jifblog.com"
         VIRTUAL_PORT: 80
+      ports:
+        - "80:80"
       depends_on:
         - app
       volumes:
