@@ -1,8 +1,10 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Submit, Div, HTML
 from django import forms
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.views import View
 from django.views.generic import FormView
 from django.utils.translation import ugettext_lazy as _
 
@@ -46,9 +48,59 @@ class ImageUploadForm(forms.Form):
         )
 
 
+class PasswordForm(forms.Form):
+    password = forms.CharField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Crispy forms stuff
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.html5_required = True
+        self.helper.form_show_labels = False
+
+        self.helper.layout = Layout(
+            Div(Field('password'), css_class='pb-3'),
+            Submit('ok', _('ok'), css_class='text-white', style='width: 100%'),
+        )
+
+class PasswordView(FormView):
+    template_name = 'feed/password.html'
+    form_class = PasswordForm
+
+    def form_valid(self, form):
+        if form.data['password'] == settings.PASSWORD:
+            self.request.session['password'] = settings.PASSWORD
+            return super().form_valid(form)
+        else:
+            return super().form_invalid(form)
+
+    def get_success_url(self):
+        return reverse('feed:feed')
+
+
+class LogoutView(View):
+    def get(self, request):
+        del self.request.session['password']
+        return HttpResponseRedirect(reverse('feed:feed'))
+
+
 class FeedView(FormView):
     template_name = 'feed/feed.html'
     form_class = ImageUploadForm
+
+    def authenticated(self, request):
+        if not settings.PASSWORD:
+            return True
+        if request.session.get('password') == settings.PASSWORD:
+            return True
+        return False
+
+    def get(self, request, *args, **kwargs):
+        if not self.authenticated(request):
+            return HttpResponseRedirect(reverse('feed:password-required'))
+        return super().get(request, *args, **kwargs)
 
     def may_upload(self, request):
         return request.user.is_superuser

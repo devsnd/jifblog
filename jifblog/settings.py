@@ -141,3 +141,5 @@ MEDIA_ROOT = BASE_DIR + '/media'
 MEDIA_URL = '/media/'
 
 FILE_UPLOAD_PERMISSIONS = 0o666
+
+PASSWORD = os.environ.get('PASSWORD', False)
