@@ -12,6 +12,7 @@ services:
     volumes:
       - ./database:/srv/app/database
       - ./media:/srv/app/media
+      - ./static:/srv/app/static
 
   nginx:
       image: nginx
